@@ -11,7 +11,13 @@ This tool is more efficient than converting the SVGs into separate PDFs before m
 **WARNING:: You must keep `fc-cache.exe` and `fc-list.exe` in the same directory as `svgstopdf.exe`.  Otherwise, Pango may not find all your fonts and automatically substitute the font for a different one.**
 *****
 ## Installation
-See **Releases** for Windows binaries.
+See [**Releases section**](https://github.com/flueterflam/svgstopdf/releases) for Windows binaries.
+
+Win32: [v1.0-win32/svgstopdf.exe](https://github.com/flueterflam/svgstopdf/releases/download/v1.0-win32/svgstopdf.exe)
+
+Win64: [v1.0-win64/svgstopdf.exe](https://github.com/flueterflam/svgstopdf/releases/download/v1.0-win64/svgstopdf.exe)
+
+Auxiliary: [v1.0-auxiliary/fc-cache.exe](https://github.com/flueterflam/svgstopdf/releases/download/v1.0-auxiliary/fc-cache.exe) and [v1.0-auxiliary/fc-list.exe](https://github.com/flueterflam/svgstopdf/releases/download/v1.0-auxiliary/fc-list.exe)
 
 ### MSYS2
 To compile, first install MSYS2 (https://www.msys2.org/).  Download 32-bit or 64-bit version, depending on your system.  Follow MSYS2 instructions to install and update MSYS2 and Mingw.
