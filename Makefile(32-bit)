@@ -1,0 +1,6 @@
+all: svgstopdf
+svgstopdf:
+	gcc -o svgstopdf svgstopdf.c -pthread -I/mingw32/include/librsvg-2.0 -I/mingw32/include/gdk-pixbuf-2.0 -I/mingw32/include/libpng16 -I/mingw32/include/cairo -I/mingw32/include/glib-2.0 -I/mingw32/lib/glib-2.0/include -I/mingw32/include/freetype2 -I/mingw32/include/fontconfig -lrsvg-2 -lm -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lcairo
+
+install:
+	install -D svgstopdf ~/svgstopdf
