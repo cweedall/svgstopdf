@@ -8,14 +8,14 @@ In order to compile it on Windows-based systems, you will need `MSYS2` and/or `M
 
 This tool is more efficient than converting the SVGs into separate PDFs before merging them together as it does not duplicate font subsets.
 
+**WARNING:: You must keep `fc-cache.exe` and `fc-list.exe` in the same directory as `svgstopdf.exe`.  Otherwise, Pango (used to generate PDF) may not find all your fonts, will print a warning, and will automatically substitute the font for something different.**
+
 Here is an example of use of this script:
 
 ```bash
 svgstopdf 1.svg 2.svg out.pdf
 ```
-
 or
-
 ```bash
 svgstopdf *.svg out.pdf
 ```
@@ -32,9 +32,7 @@ Because this syntax using pages makes it hard to figure out which image is being
 ```bash
 svgstopdf 1.svg 2.svg out.pdf --latex-package
 ```
-
 or
-
 ```bash
 svgstopdf *.svg out.pdf --latex-package
 ```
@@ -62,9 +60,7 @@ You may even pass some `includegraphics`-supported parameters:
 ```latex
 \includesvg[scale=0.8]{1.svg}
 ```
-
 or 
-
 ```latex
 \includesvg[width=0.8\textwidth]{2.svg}
 ```
