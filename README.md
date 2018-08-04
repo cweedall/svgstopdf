@@ -19,11 +19,19 @@ To compile, first install MSYS2 (https://www.msys2.org/).  Download 32-bit or 64
 ### Installing necessary libraries
 For 32-bit, open `MSYS2` or `Mingw32` console and run:
 ```
-pacman -S mingw-w64-i686-gcc-objc mingw-w64-i686-gcc mingw-w64-i686-libpng mingw-w64-i686-fontconfig mingw-w64-i686-cairo mingw-w64-i686-cairomm mingw-w64-i686-librsvg mingw-w64-i686-gdk-pixbuf2 mingw-w64-i686-glib2 mingw-w64-i686-json-glib mingw-w64-i686-python2-gobject mingw-w64-i686-python3-gobject glib2 mingw-w64-i686-freetype
+pacman -S mingw-w64-i686-gcc-objc mingw-w64-i686-gcc mingw-w64-i686-libpng \ 
+           mingw-w64-i686-fontconfig mingw-w64-i686-cairo mingw-w64-i686-cairomm \
+           mingw-w64-i686-librsvg mingw-w64-i686-gdk-pixbuf2 mingw-w64-i686-glib2 \
+           mingw-w64-i686-json-glib mingw-w64-i686-python2-gobject \
+           mingw-w64-i686-python3-gobject glib2 mingw-w64-i686-freetype
 ```
 For 64-bit, open `MSYS2` or `Mingw64` console and run:
 ```
-pacman -S mingw-w64-x86_64-gcc-objc mingw-w64-x86_64-gcc mingw-w64-x86_64-libpng mingw-w64-x86_64-fontconfig mingw-w64-x86_64-cairo mingw-w64-x86_64-cairomm mingw-w64-x86_64-librsvg mingw-w64-x86_64-gdk-pixbuf2 mingw-w64-x86_64-glib2 mingw-w64-x86_64-json-glib mingw-w64-x86_64-python2-gobject mingw-w64-x86_64-python3-gobject glib2 mingw-w64-x86_64-freetype
+pacman -S mingw-w64-x86_64-gcc-objc mingw-w64-x86_64-gcc mingw-w64-x86_64-libpng \
+          mingw-w64-x86_64-fontconfig mingw-w64-x86_64-cairo mingw-w64-x86_64-cairomm \
+          mingw-w64-x86_64-librsvg mingw-w64-x86_64-gdk-pixbuf2 mingw-w64-x86_64-glib2 \
+          mingw-w64-x86_64-json-glib mingw-w64-x86_64-python2-gobject \
+          mingw-w64-x86_64-python3-gobject glib2 mingw-w64-x86_64-freetype
 ```
 
 Type `Y` to install, including all dependencies.  This process will take several minutes, depending on download speed and your system.
