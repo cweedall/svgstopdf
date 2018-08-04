@@ -4,6 +4,7 @@
    svgstopdf.c: Command line utility for building multipage PDFs from multiple SVGs
  
    Copyright (C) 2016 Arnaud Lejosne <ad-gh@arnaud-lejosne.com>
+   Copyright (C) 2018 Christopher Weedall <cw.coder@gmail.com>
 
    Several parts of the code were insipred by this Gist https://gist.github.com/julian-klode/ac45de6d4d2227d9febc
    as well as LibRSVG's rsvg-convert utility https://git.gnome.org/browse/librsvg/plain/rsvg-convert.c
@@ -24,9 +25,13 @@
    Boston, MA 02111-1307, USA.
   
    Authors: Arnaud Lejosne <ad-gh@arnaud-lejosne.com>
+   Authors: Christopher Weedall <cw.coder@gmail.com>
 */
 
 #define _GNU_SOURCE
+#include <fontconfig.h>
+#include <fcfreetype.h>
+#include <freetype/ftcache.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
 #include <stdio.h>
@@ -82,6 +87,7 @@ main(int argc, char *argv[])
     }
     if (n_args < 2) {
         g_printerr("Usage: svgstopdf 1.svg 2.svg ... out.pdf\n");
+		g_printerr("Usage: svgstopdf *.svg ... out.pdf\n");
         exit(1);
     }
 
@@ -103,22 +109,51 @@ main(int argc, char *argv[])
         g_printerr("Error opening output file: %s\n", args[n_args - 1]);
         exit(1);
     }
+	/*
+		Create LaTeX output package - svgimages.sty
+		
+		This package file should be included: \usepackage{svgimages}
+		from the same directory as the .tex file that you are building
+	*/
     if(create_latex_package) {
         tex_file = fopen("svgimages.sty", "wb");
-
+		/*
+			Cannot create the .sty file.  Maybe it's already open and locked by another program?
+		*/
         if(!tex_file) {
             g_printerr("Error opening LaTeX output file: %s\n", args[n_args - 1]);
             exit(1);
         }
-
-        fputs("\\ProvidesPackage{svgimages}\n", tex_file);
-        fputs("\\usepackage{xifthen}\n", tex_file);
-        fputs("\\usepackage{graphicx}\n", tex_file);
-        fputs("\\newcommand{\\ifequals}[3]{\\ifthenelse{\\equal{#1}{#2}}{#3}{}}\n", tex_file);
-        fputs("\\newcommand{\\case}[2]{#1 #2}\n", tex_file);
-        fputs("\\newenvironment{switch}[1]{\\renewcommand{\\case}{\\ifequals{#1}}}{}\n", tex_file);
+		fputs("%%% Name of the package: svgimages\n", tex_file);
+		fputs("\\ProvidesPackage{svgimages}%\n", tex_file);
+		fputs("%%% Require xifthen package for if/then logic\n", tex_file);
+        fputs("\\RequirePackage{xifthen}%\n", tex_file);
+		fputs("%%% Require keyval package for accepting options passed to the package\n", tex_file);
+		fputs("%%% This is useful for the user to define a PATH to the PDF file,\n", tex_file);
+		fputs("%%% if you keep it (for example) in a subfolder -- i.e. not the same directory as the .tex file\n", tex_file);
+        fputs("\\RequirePackage{keyval}%\n", tex_file);
+		fputs("%%% Require graphicx package, for loading PDF files\n", tex_file);
+		fputs("\\RequirePackage{graphicx}%\n", tex_file);
+		fputs("%%% Package uses @ symbol.  Therefore, make it a regular character (i.e. not special, reserved character)\n", tex_file);
+		fputs("\\makeatletter%\n", tex_file);
+		fputs("%%% PATH option for package -- it defines the path to the PDF file\n", tex_file);
+		fputs("\\DeclareOptionX{path}{\\def\\Ginput@path@svgimages{#1}}%\n", tex_file);
+		fputs("%%% If an unknown option is passed to package, display a warning and details\n", tex_file);
+		fputs("\\DeclareOptionX*{\\PackageWarning{svgimages}{`\\CurrentOption' ignored}}% For unknown options\n", tex_file);
+		fputs("%%% Specify the default value for PATH (i.e. same folder as the .tex file), if it is not specified\n", tex_file);
+		fputs("\\ExecuteOptionsX{path={./}}% Preset keys, 'section' being the default here\n", tex_file);
+		fputs("%%% Process all package option setup before proceeding\n", tex_file);
+		fputs("\\ProcessOptionsX\\relax%\n", tex_file);
+		fputs("%%% If-then-else else logic.  This is defined specially so that it does not interfere with other packages.\n", tex_file);
+        fputs("\\newcommand{\\@if@equals@svgimages}[3]{\\ifthenelse{\\equal{#1}{#2}}{#3}{}}%\n", tex_file);
+		fputs("%%% Case logic -- i.e. if the value of the switch command is XYZ, then print this \\includesvg{} command.\n", tex_file);
+        fputs("\\newcommand{\\@case@svgimages}[2]{#1 #2}%\n", tex_file);
+		fputs("%%% Define Switch environment for determining the current value of \\includesvg{} command \n", tex_file);
+        fputs("\\newenvironment{switch@svgimages}[1]{\\renewcommand{\\@case@svgimages}{\\@if@equals@svgimages{#1}}}{}%\n", tex_file);
+		fputs("%%% \\includesvg{} command performs automagically and specifies to the \\includegraphics{} command which page to display\n", tex_file);
         fputs("\\newcommand{\\includesvg}[2][]{%\n", tex_file);
-        fputs("    \\begin{switch}{#2}%\n", tex_file);
+		fputs("%%% Start Switch environment\n", tex_file);
+        fputs("\t\\begin{switch@svgimages}{#2}%\n", tex_file);
     }
 
     /*
@@ -161,15 +196,19 @@ main(int argc, char *argv[])
 
         if (create_latex_package) {
             char* string;
-            asprintf(&string, "        \\case{%s}{\\includegraphics[#1,page=%d]{%s}}%%\n", args[i], i + 1, output);
+			asprintf(&string, "\t\t\\@case@svgimages{%s}{\\begingroup\\graphicspath{\\Ginput@path@svgimages}\\includegraphics[#1,page=%d]{%s}\\endgroup}%%\n", args[i], i + 1, output);
             fputs(string, tex_file);
             free(string);
         }
     }
 
     if (create_latex_package) {
-        fputs("    \\end{switch}%\n", tex_file);
-        fputs("}", tex_file);
+		fputs("%%% End Switch environment\n", tex_file);
+		fputs("\t\\end{switch@svgimages}%\n", tex_file);
+		fputs("%%% End of \\includesvg{} command\n", tex_file);
+        fputs("}%\n", tex_file);
+		fputs("%%% Return @ character to its typical, special, reserved status\n", tex_file);
+		fputs("\\makeatother%", tex_file);
         fclose(tex_file);
     }
 
