@@ -8,7 +8,7 @@ In order to compile it on Windows-based systems, you will need `MSYS2` and/or `M
 
 This tool is more efficient than converting the SVGs into separate PDFs before merging them together as it does not duplicate font subsets.
 
-**WARNING:: You must keep `fc-cache.exe` and `fc-list.exe` in the same directory as `svgstopdf.exe`.  Otherwise, Pango may not find all your fonts, will print a warning, and will automatically substitute the font for something different.**
+**WARNING:: You must keep `fc-cache.exe` and `fc-list.exe` in the same directory as `svgstopdf.exe`.  Otherwise, Pango may not find all your fonts and automatically substitute the font for a different one.**
 *****
 ## Installation
 See **Releases** for Windows binaries.
