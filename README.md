@@ -9,7 +9,46 @@ In order to compile it on Windows-based systems, you will need `MSYS2` and/or `M
 This tool is more efficient than converting the SVGs into separate PDFs before merging them together as it does not duplicate font subsets.
 
 **WARNING:: You must keep `fc-cache.exe` and `fc-list.exe` in the same directory as `svgstopdf.exe`.  Otherwise, Pango (used to generate PDF) may not find all your fonts, will print a warning, and will automatically substitute the font for something different.**
+*****
+## Installation
+See **Releases** for Windows binaries.
 
+### MSYS2
+To compile, first install MSYS2 (https://www.msys2.org/).  Download 32-bit or 64-bit version, depending on your system.  Follow MSYS2 instructions to install and update MSYS2 and Mingw.
+
+### Installing necessary libraries
+For 32-bit, open `MSYS2` or `Mingw32` console and run:
+```
+pacman -S mingw-w64-i686-gcc-objc mingw-w64-i686-gcc mingw-w64-i686-libpng mingw-w64-i686-fontconfig mingw-w64-i686-cairo mingw-w64-i686-cairomm mingw-w64-i686-librsvg mingw-w64-i686-gdk-pixbuf2 mingw-w64-i686-glib2 mingw-w64-i686-json-glib mingw-w64-i686-python2-gobject mingw-w64-i686-python3-gobject glib2 mingw-w64-i686-freetype
+```
+For 64-bit, open `MSYS2` or `Mingw64` console and run:
+```
+pacman -S mingw-w64-x86_64-gcc-objc mingw-w64-x86_64-gcc mingw-w64-x86_64-libpng mingw-w64-x86_64-fontconfig mingw-w64-x86_64-cairo mingw-w64-x86_64-cairomm mingw-w64-x86_64-librsvg mingw-w64-x86_64-gdk-pixbuf2 mingw-w64-x86_64-glib2 mingw-w64-x86_64-json-glib mingw-w64-x86_64-python2-gobject mingw-w64-x86_64-python3-gobject glib2 mingw-w64-x86_64-freetype
+```
+
+Type `Y` to install, including all dependencies.  This process will take several minutes, depending on download speed and your system.
+
+### Download and create directory for `svgstoppdf`
+Download `.zip` or clone to your MSYS2 `home` directory.  Default installation path is `C:\msys64\home\USERNAME\` or `~/` from `Mingw32` or `Mingw64` console.
+
+Keep files in `svgstopdf` directory (i.e. `C:\msys64\home\USERNAME\svgstopdf` or `~/svgstopdf`.
+
+### Compiling
+For 32-bit, delete or rename `Makefile` (which is 64-bit).  Rename `Makefile(32-bit)` to `Makefile`.  Open `Mingw32` console and run:
+```
+>cd svgstopdf
+>make
+```
+For 64-bit, open `Mingw64` console and run:
+```
+>cd svgstopdf
+>make
+```
+
+### Executable file
+You may now copy the `svgstopdf.exe`, `fc-cache.exe`, and `fc-list.exe` executables to whichever directory you choose.
+*****
+## Usage
 Here is an example of use of this script:
 
 ```bash
