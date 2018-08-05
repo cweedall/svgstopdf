@@ -99,7 +99,7 @@ This command will generate an additional `svgimages.sty` that you must keep in t
 \includesvg{2.svg}
 ```
 
-You may specify a `path` option to `svgimages`.  Use this option similarly to the `path` option for `graphicx`.  Multiple directories can be specified (e.g. `path={{/location1}{./location2}{C:/path/to/location3}}`.  However, you should generally use only one option -- the one where you will story the generated PDF file (containing all the SVGs).
+You may specify a `path` option to `svgimages`.  Use this option similarly to the `path` option for `graphicx`.  Multiple directories can be specified (e.g. `path={{/location1}{./location2}{C:/path/to/location3}}`.  However, you should generally use only one path location -- the one where you will story the generated PDF file (containing all the SVGs).
 
 ```latex
 \usepackage[path={{./subdirectory/}}]{svgimages}
